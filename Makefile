@@ -1,6 +1,7 @@
 src = $(wildcard *.c)
 obj = $(src:.c=.o)
 
+CFLAGS = -Wall -pedantic
 LDFLAGS = -framework CoreFoundation -framework IOKit
 
 shutup: $(obj)

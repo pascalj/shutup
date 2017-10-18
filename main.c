@@ -1,22 +1,15 @@
-#include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#include <mach/mach_port.h>
-#include <mach/mach_interface.h>
-#include <mach/mach_init.h>
 
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOMessage.h>
 
-io_connect_t  root_port;
+io_connect_t root_port;
 
 void
-sleepCb(void * refCon, io_service_t service, natural_t messageType, void * messageArgument)
-{
-    switch (messageType)
-    {
-            
+sleepCb(void* refCon, io_service_t service, natural_t messageType, void* messageArgument) {
+    switch (messageType) {
+        case kIOMessageCanSystemPowerOff:
         case kIOMessageCanSystemSleep:
         case kIOMessageSystemWillSleep:
             system("osascript -e \"set Volume 0\"\n");
@@ -27,11 +20,10 @@ sleepCb(void * refCon, io_service_t service, natural_t messageType, void * messa
 }
 
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     IONotificationPortRef  notifyPortRef;
     io_object_t            notifierObject;
-    void*                  refCon;
+    void*                  refCon = NULL;
     
     root_port = IORegisterForSystemPower(refCon, &notifyPortRef, sleepCb, &notifierObject);
     if (root_port == 0)
@@ -45,5 +37,5 @@ int main(int argc, char **argv)
     
     CFRunLoopRun();
     
-    return (0);
+    return 0;
 }
